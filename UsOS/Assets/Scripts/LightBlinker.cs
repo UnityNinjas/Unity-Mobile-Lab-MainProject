@@ -17,7 +17,7 @@ public class LightBlinker : MonoBehaviour
 
         if (this.randomTime <= 0)
         {
-            this.lighter.spotAngle = 0.1f;
+            this.lighter.spotAngle =70f;
             this.randomTime = Random.Range(0f, 4f);
         }
     }

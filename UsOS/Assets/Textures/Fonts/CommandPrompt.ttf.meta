@@ -1,0 +1,20 @@
+fileFormatVersion: 2
+guid: 17b6c13a4e8382749afc0fc6df4d1460
+timeCreated: 1470517233
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 3
+  fontSize: 18
+  forceTextureCase: -2
+  characterSpacing: 1
+  characterPadding: 0
+  includeFontData: 1
+  fontNames:
+  - CommandPrompt
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 1
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
