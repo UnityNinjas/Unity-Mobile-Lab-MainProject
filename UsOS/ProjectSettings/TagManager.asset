@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Fire
   - Korey
+  - Laser
+  - Walls1
+  - Walls2
   layers:
   - Default
   - TransparentFX
@@ -45,6 +48,9 @@ TagManager:
     locked: 0
   - name: Background
     uniqueID: 1093696345
+    locked: 0
+  - name: InteractObject
+    uniqueID: 1914288107
     locked: 0
   - name: Characters
     uniqueID: 3940858523

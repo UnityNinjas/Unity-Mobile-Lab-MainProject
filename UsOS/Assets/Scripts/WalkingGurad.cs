@@ -44,7 +44,7 @@ public class WalkingGurad : MonoBehaviour
 
     private void ClampPosition()
     {
-        Debug.Log(this.maxPosition);
+        //Debug.Log(this.maxPosition);
         if (!isFocused)
         {
             this.animator.SetTrigger("Walking");
