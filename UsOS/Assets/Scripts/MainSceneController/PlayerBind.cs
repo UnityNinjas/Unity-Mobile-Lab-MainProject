@@ -16,6 +16,6 @@ public class PlayerBind : MonoBehaviour
     public void CalculateNewPosition()
     {
         //Vector2.Distance(new Vector2(touchPosition.x/100, touchPosition.y/100), this.beam.localPosition);
-        Debug.Log(Vector2.Distance(new Vector2(touchPosition.x / 100, touchPosition.y / 100), this.beam.position));
+        //Debug.Log(Vector2.Distance(new Vector2(touchPosition.x / 100, touchPosition.y / 100), this.beam.position));
     }
 }

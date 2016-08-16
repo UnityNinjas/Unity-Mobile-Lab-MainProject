@@ -13,6 +13,7 @@ public class Moving : MonoBehaviour
     private bool endOfAnimation;
     private bool lowerKick;
     private Rigidbody2D rb;
+    private bool isMoving = true;
 
     public void Awake()
     {
@@ -22,11 +23,17 @@ public class Moving : MonoBehaviour
 
 
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
 
         MovingCharacter();
+
+
+        //if (!this.isMoving)
+        //{
+        //    this.animator.SetTrigger("Idle");
+        //}
 
         if (endOfAnimation)
         {
@@ -69,11 +76,16 @@ public class Moving : MonoBehaviour
                 this.gameObject.GetComponent<SpriteRenderer>().flipX = true;
 
             }
-            else
+            else if (this.horizontal == 0)
             {
                 this.animator.SetTrigger("Idle");
-
             }
+
+        }
+
+        if (this.horizontal != 0)
+        {
+            this.isMoving = false;
         }
 
         this.isSprintig = false;
@@ -99,10 +111,10 @@ public class Moving : MonoBehaviour
 
     public void OnCollisionExit2D(Collision2D hitObject)
     {
-        if (hitObject.gameObject.tag == "Korey" && hitObject.transform.position.y < this.transform.position.y)
+        if (hitObject.gameObject.tag == "Korey"
+            && hitObject.transform.position.y < this.transform.position.y)
         {
             this.isJumping = true;
-
         }
     }
 
@@ -117,15 +129,14 @@ public class Moving : MonoBehaviour
 
     }
 
+
     public void Jump()
     {
-        //It's better with rigidbody than translate
-        //   this.transform.Translate(Vector3.up * 20 * Time.deltaTime);
+
         this.rb.AddForce(Vector3.up * 5, ForceMode2D.Impulse);
         this.animator.SetTrigger("Jump");
 
     }
-
 
     public void Kick()
     {
