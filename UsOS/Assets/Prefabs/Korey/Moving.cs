@@ -4,7 +4,7 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public class Moving : MonoBehaviour
 {
-    public int sprintingSpeed = 1;
+    public int sprintingSpeed = 50;
 
     private float horizontal;
     private Animator animator;
@@ -13,80 +13,80 @@ public class Moving : MonoBehaviour
     private bool endOfAnimation;
     private bool lowerKick;
     private Rigidbody2D rb;
-    private bool isMoving = true;
+    private bool isGrounded = true;
 
     public void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         this.animator = this.GetComponent<Animator>();
+
     }
 
 
 
     private void FixedUpdate()
     {
-        horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
+        //horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
+        horizontal = Input.GetAxis("Horizontal");
 
         MovingCharacter();
 
-
-        //if (!this.isMoving)
-        //{
-        //    this.animator.SetTrigger("Idle");
-        //}
-
-        if (endOfAnimation)
-        {
-            this.animator.SetTrigger("Idle");
-            this.endOfAnimation = false;
-        }
     }
 
     private void MovingCharacter()
     {
-        if (!this.isJumping)
+        Vector3 movement = new Vector3(horizontal, 0.0f, 0);
+
+        if (horizontal <= 0.5 && this.horizontal > 0)
         {
-            if (horizontal <= 0.5 && this.horizontal > 0)
-            {
-                this.animator.SetTrigger("Walking");
-                this.transform.Translate(Vector3.right * Time.deltaTime);
-                this.gameObject.GetComponent<SpriteRenderer>().flipX = false;
+            this.animator.SetTrigger("Walking");
 
-            }
-            else if (this.horizontal > 0.5)
-            {
-                this.isSprintig = true;
-                this.animator.SetTrigger("Sprint");
-                this.transform.Translate(Vector3.right * sprintingSpeed * Time.deltaTime);
-                this.gameObject.GetComponent<SpriteRenderer>().flipX = false;
+            this.rb.velocity = movement;
 
-            }
-            else if (this.horizontal >= -0.5 && this.horizontal < 0)
-            {
-                this.animator.SetTrigger("Walking");
-                this.transform.Translate(Vector3.left * Time.deltaTime);
-                this.gameObject.GetComponent<SpriteRenderer>().flipX = true;
+            //  this.transform.Translate(Vector3.right * Time.deltaTime);
+            this.gameObject.GetComponent<SpriteRenderer>().flipX = false;
+        }
+        else if (this.horizontal > 0.5)
+        {
+            this.isSprintig = true;
+            this.animator.SetTrigger("Sprint");
+            this.rb.velocity = movement * sprintingSpeed;
 
-            }
-            else if (this.horizontal < -0.5)
-            {
-                this.isSprintig = true;
-                this.animator.SetTrigger("Sprint");
-                this.transform.Translate(Vector3.left * sprintingSpeed * Time.deltaTime);
-                this.gameObject.GetComponent<SpriteRenderer>().flipX = true;
+            //TODO this is moving with transform
+            //    this.transform.Translate(Vector3.right * sprintingSpeed * Time.deltaTime);
+            this.gameObject.GetComponent<SpriteRenderer>().flipX = false;
 
-            }
-            else if (this.horizontal == 0)
-            {
-                this.animator.SetTrigger("Idle");
-            }
+        }
+        else if (this.horizontal >= -0.5 && this.horizontal < 0)
+        {
+            this.rb.velocity = movement;
+
+            this.animator.SetTrigger("Walking");
+            //TODO Moving with transform
+            //this.transform.Translate(Vector3.left * Time.deltaTime);
+            this.gameObject.GetComponent<SpriteRenderer>().flipX = true;
+
+
+        }
+        else if (this.horizontal < -0.5)
+        {
+            this.rb.velocity = movement * sprintingSpeed;
+
+            this.isSprintig = true;
+            this.animator.SetTrigger("Sprint");
+
+            //TODO Moving with transform
+            //     this.transform.Translate(Vector3.left * sprintingSpeed * Time.deltaTime);
+            this.gameObject.GetComponent<SpriteRenderer>().flipX = true;
+        }
+
+        if (!this.isSprintig && !this.isJumping && this.horizontal == 0)
+        {
+            this.animator.SetTrigger("Idle");
+            this.rb.velocity = Vector2.down * 2;
 
         }
 
-        if (this.horizontal != 0)
-        {
-            this.isMoving = false;
-        }
 
         this.isSprintig = false;
     }
@@ -109,34 +109,47 @@ public class Moving : MonoBehaviour
         }
     }
 
-    public void OnCollisionExit2D(Collision2D hitObject)
-    {
-        if (hitObject.gameObject.tag == "Korey"
-            && hitObject.transform.position.y < this.transform.position.y)
-        {
-            this.isJumping = true;
-        }
-    }
 
     public void OnCollisionEnter2D(Collision2D hitObject)
     {
-        if (hitObject.gameObject.name.Equals("Floor"))
+        if (hitObject.gameObject.CompareTag("Floor"))
         {
             this.isJumping = false;
         }
-
-        this.animator.SetTrigger("Idle");
-
     }
 
 
     public void Jump()
     {
 
-        this.rb.AddForce(Vector3.up * 5, ForceMode2D.Impulse);
-        this.animator.SetTrigger("Jump");
+        if (!isJumping)
+        {
+
+            this.isJumping = true;
+            this.rb.AddForce(Vector3.up * 5, ForceMode2D.Impulse);
+
+            this.animator.SetTrigger("Jump");
+        }
 
     }
+
+    void OnCollisionExit2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Floor"))
+        {
+            isGrounded = false;
+        }
+    }
+
+
+    void OnCollisionStay2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Floor"))
+        {
+            isGrounded = true;
+        }
+    }
+
 
     public void Kick()
     {

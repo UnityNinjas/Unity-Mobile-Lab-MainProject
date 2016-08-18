@@ -9,6 +9,7 @@ TagManager:
   - Laser
   - Walls1
   - Walls2
+  - Floor
   layers:
   - Default
   - TransparentFX
