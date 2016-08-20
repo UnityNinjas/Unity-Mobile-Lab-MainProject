@@ -22,7 +22,6 @@ public class WalkingGurad : MonoBehaviour
 
     void FixedUpdate()
     {
-
         MovingGuard();
         ClampPosition();
     }
@@ -44,7 +43,6 @@ public class WalkingGurad : MonoBehaviour
 
     private void ClampPosition()
     {
-        //Debug.Log(this.maxPosition);
         if (!isFocused)
         {
             this.animator.SetTrigger("Walking");
@@ -60,7 +58,6 @@ public class WalkingGurad : MonoBehaviour
                 this.speed *= -1;
                 this.sprite.flipX = false;
             }
-
         }
     }
 

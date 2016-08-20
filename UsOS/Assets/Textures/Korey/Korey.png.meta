@@ -852,7 +852,7 @@ TextureImporter:
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     outline: []
-  spritePackingTag: 
+  spritePackingTag: SceneObjects
   userData: 
   assetBundleName: 
   assetBundleVariant: 
