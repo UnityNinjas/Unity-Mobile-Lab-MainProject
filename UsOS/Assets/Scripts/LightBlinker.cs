@@ -3,11 +3,14 @@
 public class LightBlinker : MonoBehaviour
 {
     public Light lighter;
-    public float randomTime;
+    public float minSeconds = 0.01f;
+    public float maxSeconds = 4f;
+
+    private float randomTime;
 
     void Start()
     {
-        this.randomTime = Random.Range(0f, 4f);
+        this.randomTime = Random.Range(this.maxSeconds, this.maxSeconds);
     }
 
     void Update()
@@ -17,8 +20,8 @@ public class LightBlinker : MonoBehaviour
 
         if (this.randomTime <= 0)
         {
-            this.lighter.spotAngle =70f;
-            this.randomTime = Random.Range(0f, 4f);
+            this.lighter.spotAngle = 70f;
+            this.randomTime = Random.Range(this.maxSeconds, this.maxSeconds);
         }
     }
 }
