@@ -9,18 +9,15 @@ public class WalkingGurad : MonoBehaviour
     private Animator animator;
     private SpriteRenderer sprite;
 
-    void Start()
+    private void Start()
     {
         this.currenTransform = GetComponent<RectTransform>();
-
-        this.sprite = this.GetComponent<SpriteRenderer>();
-
-        this.animator = this.GetComponent<Animator>();
-
+        this.sprite = GetComponent<SpriteRenderer>();
+        this.animator = GetComponent<Animator>();
         this.maxPosition = this.currenTransform.localPosition.x;
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         MovingGuard();
         ClampPosition();
@@ -28,14 +25,13 @@ public class WalkingGurad : MonoBehaviour
 
     private void MovingGuard()
     {
-        if (!isFocused)
+        if (!this.isFocused)
         {
             this.currenTransform.Translate(Vector3.right * this.speed * Time.deltaTime);
 
         }
     }
-
-
+    
     public void Shoot()
     {
         this.animator.SetTrigger("Shoot");
@@ -43,17 +39,17 @@ public class WalkingGurad : MonoBehaviour
 
     private void ClampPosition()
     {
-        if (!isFocused)
+        if (!this.isFocused)
         {
             this.animator.SetTrigger("Walking");
 
-            if (currenTransform.localPosition.x < -this.maxPosition)
+            if (this.currenTransform.localPosition.x < -this.maxPosition)
             {
                 this.speed *= -1;
                 this.sprite.flipX = true;
             }
 
-            if (currenTransform.localPosition.x > this.maxPosition)
+            if (this.currenTransform.localPosition.x > this.maxPosition)
             {
                 this.speed *= -1;
                 this.sprite.flipX = false;
@@ -61,18 +57,15 @@ public class WalkingGurad : MonoBehaviour
         }
     }
 
-    void OnTriggerStay2D(Collider2D other)
+    private void OnTriggerStay2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Korey")
+        if (other.gameObject.tag == "Korey" && Moving.isHiding == false)
         {
             this.animator.SetTrigger("Idle");
             this.isFocused = true;
             this.sprite.flipX = false;
-
         }
     }
-
-
 
     public void OnTriggerExit2D(Collider2D go)
     {
@@ -81,5 +74,4 @@ public class WalkingGurad : MonoBehaviour
             this.isFocused = false;
         }
     }
-
 }

@@ -2,7 +2,6 @@
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityStandardAssets.CrossPlatformInput;
 using UnityStandardAssets.ImageEffects;
 
 public class Hud : MonoBehaviour

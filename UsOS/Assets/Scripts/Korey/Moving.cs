@@ -14,7 +14,11 @@ internal enum State
 
 public class Moving : MonoBehaviour
 {
-    private readonly Dictionary<string, DamageTag> damagetagsMap = new Dictionary<string, DamageTag>
+    private const string HideSpotTag = "HideSpot";
+    private uint sortingOrderOriginal = 1000;
+    private uint sortingOrderHide = 0;
+
+    private readonly Dictionary<string, DamageTag> damageTagsMap = new Dictionary<string, DamageTag>
     {
         {"Laser", DamageTag.Laser},
         {"Enemy", DamageTag.Enemy},
@@ -22,16 +26,19 @@ public class Moving : MonoBehaviour
         {"Explosion", DamageTag.Explosion}
     };
 
+    [HideInInspector]
+    public float restoreHealthTimer;
+    public bool canHide;
+    public static bool isHiding;
+
+    internal static State koreyState;
+
     //Animation hashes
     private readonly int DamageHash = Animator.StringToHash("Damage");
     private readonly int deadHash = Animator.StringToHash("Dead");
-    private readonly int idle = Animator.StringToHash("Idle");
+    //private readonly int idle = Animator.StringToHash("Idle");
     private readonly int jump = Animator.StringToHash("Jump");
 
-    [HideInInspector]
-    public float restoreHealthTimer;
-
-    internal static State koreyState;
     private float horizontal;
     private Animator animator;
     private bool isSprintig;
@@ -40,6 +47,7 @@ public class Moving : MonoBehaviour
     private bool lowerKick;
     private bool isGrounded = true;
     private Rigidbody2D rigidbodyPlayer;
+    private bool isMoving;
 
     private Rigidbody2D RigidbodyPlayer
     {
@@ -47,7 +55,7 @@ public class Moving : MonoBehaviour
         {
             if (this.rigidbodyPlayer == null)
             {
-                this.RigidbodyPlayer = this.GetComponent<Rigidbody2D>();
+                this.RigidbodyPlayer = GetComponent<Rigidbody2D>();
             }
 
             return this.rigidbodyPlayer;
@@ -62,7 +70,6 @@ public class Moving : MonoBehaviour
     public void Awake()
     {
         this.animator = GetComponent<Animator>();
-
     }
 
     public void Start()
@@ -88,6 +95,16 @@ public class Moving : MonoBehaviour
 
         this.horizontal = CrossPlatformInputManager.GetAxis("Horizontal");//Input.GetAxis("Horizontal");
 
+        if (CrossPlatformInputManager.GetAxis("Vertical") > 0.2f)
+        {
+            Jump();
+            Hide();
+        }
+        else if (CrossPlatformInputManager.GetAxis("Vertical") < -0.2f)
+        {
+            UnHide();
+        }
+
         MovingCharacter();
     }
 
@@ -102,12 +119,12 @@ public class Moving : MonoBehaviour
             this.isJumping = false;
         }
 
-        if (!this.damagetagsMap.ContainsKey(tagAsString))
+        if (!this.damageTagsMap.ContainsKey(tagAsString))
         {
             return;
         }
 
-        tagCollider = this.damagetagsMap[tagAsString];
+        tagCollider = this.damageTagsMap[tagAsString];
         switch (tagCollider)
         {
             case DamageTag.Laser:
@@ -141,7 +158,23 @@ public class Moving : MonoBehaviour
         }
     }
 
-    private bool isMoving;
+    public void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == HideSpotTag)
+        {
+            this.canHide = true;
+        }
+    }
+
+    public void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.tag == HideSpotTag)
+        {
+            this.canHide = false;
+            UnHide();
+        }
+    }
+
     private void MovingCharacter()
     {
         Vector3 movement = new Vector3(this.horizontal, 0f, 0f);
@@ -197,7 +230,7 @@ public class Moving : MonoBehaviour
         this.animator.SetBool("Idle", this.isSprintig);
         this.animator.SetBool("JumpToIdle", this.isGrounded);
 
-        if (isGrounded && !this.isSprintig && !this.isJumping && !this.isMoving)
+        if (this.isGrounded && !this.isSprintig && !this.isJumping && !this.isMoving)
         {
             this.RigidbodyPlayer.velocity = Vector2.zero;
         }
@@ -227,6 +260,7 @@ public class Moving : MonoBehaviour
     {
         if (!this.isJumping)
         {
+            Debug.Log("");
             this.animator.SetTrigger(this.jump);
             this.isJumping = true;
             this.RigidbodyPlayer.AddForce(Vector3.up * 5f, ForceMode2D.Impulse);
@@ -258,6 +292,23 @@ public class Moving : MonoBehaviour
 
         GameData.Health += value;
         Hud.instance.UpdateHealth();
+    }
+
+    public void Hide()
+    {
+        if (this.canHide)
+        {
+            isHiding = true;
+            GetComponent<SpriteRenderer>().sortingOrder = (int)this.sortingOrderHide;
+            Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Enemy"), true);
+        }
+    }
+
+    public void UnHide()
+    {
+        isHiding = false;
+        GetComponent<SpriteRenderer>().sortingOrder = (int)this.sortingOrderOriginal;
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Enemy"), false);
     }
 
     //Attached to Korey animator/ animation: "Dead"

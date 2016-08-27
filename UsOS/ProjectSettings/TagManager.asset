@@ -10,6 +10,8 @@ TagManager:
   - Walls1
   - Walls2
   - FloorCollider
+  - Floor
+  - HideSpot
   layers:
   - Default
   - TransparentFX
@@ -19,8 +21,8 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
+  - Player
+  - Enemy
   - 
   - 
   - 
