@@ -9,7 +9,7 @@ TagManager:
   - Laser
   - Walls1
   - Walls2
-  - Floor
+  - FloorCollider
   layers:
   - Default
   - TransparentFX

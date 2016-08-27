@@ -35,8 +35,6 @@ public class Hud : MonoBehaviour
 
     public void UpdateHealth()
     {
-        Debug.Log(GameData.Health);
-
         if (GameData.Health <= 100)
         {
             this.chipCircuit.gameObject.SetActive(true);

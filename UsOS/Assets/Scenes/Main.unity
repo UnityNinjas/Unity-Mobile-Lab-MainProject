@@ -3113,7 +3113,7 @@ GameObject:
   - 61: {fileID: 564163807}
   m_Layer: 8
   m_Name: FloorCollider
-  m_TagString: Untagged
+  m_TagString: FloorCollider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9768,6 +9768,22 @@ Prefab:
       propertyPath: m_Name
       value: KoreyControls
       objectReference: {fileID: 0}
+    - target: {fileID: 11494448, guid: 73248c4cd1d685f4daeb78a09f522443, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1670981122}
+    - target: {fileID: 11494448, guid: 73248c4cd1d685f4daeb78a09f522443, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Kick
+      objectReference: {fileID: 0}
+    - target: {fileID: 11430320, guid: 73248c4cd1d685f4daeb78a09f522443, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1670981122}
+    - target: {fileID: 11430320, guid: 73248c4cd1d685f4daeb78a09f522443, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Punch
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 73248c4cd1d685f4daeb78a09f522443, type: 2}
   m_IsPrefabParent: 0
@@ -10499,6 +10515,10 @@ Prefab:
     - target: {fileID: 5037124, guid: 314814cd0dba5dc4d87dbaf1052f3c49, type: 2}
       propertyPath: m_LinearDrag
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 162890, guid: 314814cd0dba5dc4d87dbaf1052f3c49, type: 2}
+      propertyPath: m_TagString
+      value: Korey
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5037124, guid: 314814cd0dba5dc4d87dbaf1052f3c49, type: 2}
