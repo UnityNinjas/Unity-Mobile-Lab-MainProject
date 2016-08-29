@@ -30,6 +30,9 @@ public class Moving : MonoBehaviour
     public float restoreHealthTimer;
     public bool canHide;
     public static bool isHiding;
+    public GameObject kickDetector;
+    public GameObject punchDetector;
+    public GameObject AirPunchDetector;
 
     internal static State koreyState;
 
@@ -230,7 +233,7 @@ public class Moving : MonoBehaviour
         this.animator.SetBool("Idle", this.isSprintig);
         this.animator.SetBool("JumpToIdle", this.isGrounded);
 
-        if (this.isGrounded && !this.isSprintig && !this.isJumping  && koreyState == State.Alive&& !lowerKick)
+        if (this.isGrounded && !this.isSprintig && !this.isJumping && koreyState == State.Alive && !lowerKick)
         {
             this.RigidbodyPlayer.velocity = Vector2.zero;
         }
@@ -320,6 +323,40 @@ public class Moving : MonoBehaviour
         Hud.instance.ActivateTryAgainPanel();
     }
 
+
+
+    public void ActivateKickDetector()
+    {
+        this.kickDetector.SetActive(true);
+    }
+
+    public void DeactivateKickDetector()
+    {
+        this.kickDetector.SetActive(false);
+    }
+
+    public void ActivatePunchkDetector()
+    {
+        this.punchDetector.SetActive(true);
+    }
+
+    public void DeactivatePunchDetector()
+    {
+        this.punchDetector.SetActive(false);
+    }
+
+
+
+    public void ActivateAirPunchkDetector()
+    {
+        this.AirPunchDetector.SetActive(true);
+    }
+
+    public void DeactivateAirPunchDetector()
+    {
+        this.AirPunchDetector.SetActive(false);
+    }
+
     public void Kick()
     {
         if (this.isSprintig)
@@ -329,6 +366,7 @@ public class Moving : MonoBehaviour
         }
         else
         {
+
             this.animator.SetTrigger("NormalKick");
         }
     }

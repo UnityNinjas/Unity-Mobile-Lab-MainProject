@@ -6,18 +6,21 @@ public class WalkingGurad : MonoBehaviour
 {
     private RectTransform currenTransform;
     private float maxPosition;
-    private bool isFocused;
+    // private bool isFocused;
     private int speed = 2;
     private Animator animator;
     private SpriteRenderer sprite;
     private float timeStay = 1;
     private int walking;
     private int shoot;
+    private bool isDead;
     private float shootingCounter = 1;
     public GameObject bullet;
     public Transform shootPoint;
     public CollisionManager CollisionManager;
-    public Moving korey;
+    public HitDetector HitDetector;
+    public HitDetector PubchDetector;
+    public HitDetector AirPunchDetector;
 
     private void Start()
     {
@@ -28,6 +31,15 @@ public class WalkingGurad : MonoBehaviour
         shoot = Animator.StringToHash("Shoot");
         walking = Animator.StringToHash("Walking");
         CollisionManager.KoreyTrigger = StartShooting;
+    }
+
+    public void Dead(bool isTakingHit)
+    {
+        if (isTakingHit)
+        {
+            this.animator.SetTrigger("Die");
+            isDead = true;
+        }
     }
 
     private void StartShooting(bool koreyTrigger)
@@ -60,12 +72,9 @@ public class WalkingGurad : MonoBehaviour
         ClampPosition();
     }
 
-    
-
     private void MovingGuard()
     {
-
-        if (!this.isFocused)
+        if (!this.isDead)
         {
             this.currenTransform.Translate(Vector3.left * this.speed * Time.deltaTime);
         }

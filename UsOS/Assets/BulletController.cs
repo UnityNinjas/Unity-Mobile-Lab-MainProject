@@ -4,6 +4,7 @@ public class BulletController : MonoBehaviour
 {
 
     public Moving kroey;
+
     void LateUpdate()
     {
         this.transform.Translate(Vector3.left * Time.deltaTime);
