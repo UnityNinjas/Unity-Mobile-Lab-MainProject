@@ -230,7 +230,7 @@ public class Moving : MonoBehaviour
         this.animator.SetBool("Idle", this.isSprintig);
         this.animator.SetBool("JumpToIdle", this.isGrounded);
 
-        if (this.isGrounded && !this.isSprintig && !this.isJumping && !this.isMoving)
+        if (this.isGrounded && !this.isSprintig && !this.isJumping  && koreyState == State.Alive&& !lowerKick)
         {
             this.RigidbodyPlayer.velocity = Vector2.zero;
         }
@@ -260,7 +260,6 @@ public class Moving : MonoBehaviour
     {
         if (!this.isJumping)
         {
-            Debug.Log("");
             this.animator.SetTrigger(this.jump);
             this.isJumping = true;
             this.RigidbodyPlayer.AddForce(Vector3.up * 5f, ForceMode2D.Impulse);
@@ -283,6 +282,8 @@ public class Moving : MonoBehaviour
         if (GameData.Health + value <= 0)
         {
             koreyState = State.Dead;
+            this.RigidbodyPlayer.AddForce(Vector2.left, ForceMode2D.Impulse);
+
             Hud.instance.mobileControls.gameObject.SetActive(false);
             this.animator.SetTrigger(this.deadHash);
             Time.timeScale = 0.5f;
@@ -291,6 +292,7 @@ public class Moving : MonoBehaviour
         }
 
         GameData.Health += value;
+
         Hud.instance.UpdateHealth();
     }
 
@@ -314,6 +316,7 @@ public class Moving : MonoBehaviour
     //Attached to Korey animator/ animation: "Dead"
     public void OnDeadFinish()
     {
+        Debug.Log("Fuck");
         Hud.instance.ActivateTryAgainPanel();
     }
 

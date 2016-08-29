@@ -3,7 +3,7 @@
     //Health Player
     private const int MinHealth = 0;
     private const int MaxHealth = 230;
-    public const float DefaultTime = 0.2f;
+    public const float DefaultTime = 2;
     public const float HitTime = 10f;
 
     public const float sprintSpeed = 4f;
