@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-public class LightBlinker : MonoBehaviour
+public class BeamBlinker : MonoBehaviour
 {
-    public Light lighter;
+    public GameObject beam;
     public float minSeconds = 0.01f;
     public float maxSeconds = 4f;
 
@@ -15,13 +15,12 @@ public class LightBlinker : MonoBehaviour
 
     void Update()
     {
-        this.lighter.spotAngle = 115;
         this.randomTime -= Time.deltaTime;
 
         if (this.randomTime <= 0)
         {
-            this.lighter.spotAngle = 70f;
-            this.randomTime = Random.Range(this.minSeconds, this.maxSeconds);
+            this.beam.SetActive(!this.beam.activeSelf);
+            this.randomTime = Random.Range(this.maxSeconds, this.maxSeconds);
         }
     }
 }
