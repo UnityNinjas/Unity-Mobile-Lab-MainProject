@@ -3,7 +3,7 @@
     //Health Player
     private const int MinHealth = 0;
     private const int MaxHealth = 230;
-    public const float DefaultTime = 0.2f;
+    public const float DefaultTime = 2;
     public const float HitTime = 10f;
 
     public const float sprintSpeed = 4f;
@@ -12,11 +12,11 @@
 
     //Damage
     public const byte DamageByKick = 30;
-    public const byte DamageByLaser = 10;
+    public const byte DamageByLaser = 100;
     public const byte DamageByBullet = 15;
     public const byte DamageByExplosion = 40;
 
-    private static int health = 210;
+    private static int health = 10;
 
     public static int Health
     {

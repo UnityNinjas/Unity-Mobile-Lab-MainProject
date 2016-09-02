@@ -30,6 +30,9 @@ public class Moving : MonoBehaviour
     public float restoreHealthTimer;
     public bool canHide;
     public static bool isHiding;
+    public GameObject kickDetector;
+    public GameObject punchDetector;
+    public GameObject AirPunchDetector;
 
     internal static State koreyState;
 
@@ -93,7 +96,7 @@ public class Moving : MonoBehaviour
             this.restoreHealthTimer = GameData.DefaultTime;
         }
 
-        this.horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
+        this.horizontal = CrossPlatformInputManager.GetAxis("Horizontal");//Input.GetAxis("Horizontal");
 
         if (CrossPlatformInputManager.GetAxis("Vertical") > 0.2f)
         {
@@ -230,7 +233,7 @@ public class Moving : MonoBehaviour
         this.animator.SetBool("Idle", this.isSprintig);
         this.animator.SetBool("JumpToIdle", this.isGrounded);
 
-        if (this.isGrounded && !this.isSprintig && !this.isJumping && !this.isMoving)
+        if (this.isGrounded && !this.isSprintig && !this.isJumping && koreyState == State.Alive && !lowerKick)
         {
             this.RigidbodyPlayer.velocity = Vector2.zero;
         }
@@ -260,7 +263,6 @@ public class Moving : MonoBehaviour
     {
         if (!this.isJumping)
         {
-            Debug.Log("");
             this.animator.SetTrigger(this.jump);
             this.isJumping = true;
             this.RigidbodyPlayer.AddForce(Vector3.up * 5f, ForceMode2D.Impulse);
@@ -283,6 +285,8 @@ public class Moving : MonoBehaviour
         if (GameData.Health + value <= 0)
         {
             koreyState = State.Dead;
+            this.RigidbodyPlayer.AddForce(Vector2.left, ForceMode2D.Impulse);
+
             Hud.instance.mobileControls.gameObject.SetActive(false);
             this.animator.SetTrigger(this.deadHash);
             Time.timeScale = 0.5f;
@@ -291,6 +295,7 @@ public class Moving : MonoBehaviour
         }
 
         GameData.Health += value;
+
         Hud.instance.UpdateHealth();
     }
 
@@ -314,7 +319,42 @@ public class Moving : MonoBehaviour
     //Attached to Korey animator/ animation: "Dead"
     public void OnDeadFinish()
     {
+        Debug.Log("Fuck");
         Hud.instance.ActivateTryAgainPanel();
+    }
+
+
+
+    public void ActivateKickDetector()
+    {
+        this.kickDetector.SetActive(true);
+    }
+
+    public void DeactivateKickDetector()
+    {
+        this.kickDetector.SetActive(false);
+    }
+
+    public void ActivatePunchkDetector()
+    {
+        this.punchDetector.SetActive(true);
+    }
+
+    public void DeactivatePunchDetector()
+    {
+        this.punchDetector.SetActive(false);
+    }
+
+
+
+    public void ActivateAirPunchkDetector()
+    {
+        this.AirPunchDetector.SetActive(true);
+    }
+
+    public void DeactivateAirPunchDetector()
+    {
+        this.AirPunchDetector.SetActive(false);
     }
 
     public void Kick()
@@ -326,6 +366,7 @@ public class Moving : MonoBehaviour
         }
         else
         {
+
             this.animator.SetTrigger("NormalKick");
         }
     }

@@ -12,6 +12,8 @@ TagManager:
   - FloorCollider
   - Floor
   - HideSpot
+  - GuardBot
+  - Kick
   layers:
   - Default
   - TransparentFX

@@ -40,7 +40,7 @@ public class Hud : MonoBehaviour
             this.topVignete.gameObject.SetActive(true);
             this.bottomVignete.gameObject.SetActive(true);
             this.chipCircuit.color = new Color(1f, 1f, 1f, 2f / (GameData.Health + 7f));
-            this.motionBlur.blurAmount = 1f / GameData.Health * 20;
+            this.motionBlur.blurAmount = 5f / (GameData.Health + 1f);
             this.mobileControls.alpha = GameData.Health / 100f;
             this.topVignete.anchoredPosition = new Vector2(0, -(GameData.Health / -100f * 384f));
             this.bottomVignete.anchoredPosition = new Vector2(0, GameData.Health / -100f * 384f);
@@ -67,6 +67,7 @@ public class Hud : MonoBehaviour
 
     public void OnEndEditField()
     {
+
         if (!string.IsNullOrEmpty(this.inputField.text))
         {
             string input = this.inputField.text.ToLower();
