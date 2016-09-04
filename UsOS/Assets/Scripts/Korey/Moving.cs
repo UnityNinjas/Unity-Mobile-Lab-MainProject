@@ -51,6 +51,8 @@ public class Moving : MonoBehaviour
     private bool isGrounded = true;
     private Rigidbody2D rigidbodyPlayer;
     private bool isMoving;
+    private SpriteRenderer sprite;
+    private bool isHurt;
 
     private Rigidbody2D RigidbodyPlayer
     {
@@ -73,6 +75,7 @@ public class Moving : MonoBehaviour
     public void Awake()
     {
         this.animator = GetComponent<Animator>();
+        this.sprite = this.GetComponent<SpriteRenderer>();
     }
 
     public void Start()
@@ -89,24 +92,27 @@ public class Moving : MonoBehaviour
             return;
         }
 
-        this.restoreHealthTimer -= Time.deltaTime;
+        //When player is hurt will stop AddForce from controllers
+        // When player finish his health pennalty will restore 4 health per update 
         if (this.restoreHealthTimer <= 0)
         {
             UpdateHealth(4);
             this.restoreHealthTimer = GameData.DefaultTime;
         }
-
-        this.horizontal = CrossPlatformInputManager.GetAxis("Horizontal");//Input.GetAxis("Horizontal");
-
-        if (CrossPlatformInputManager.GetAxis("Vertical") > 0.2f)
+        else if (this.restoreHealthTimer > 0)
         {
-            Jump();
-            Hide();
+            this.restoreHealthTimer -= Time.deltaTime;
+
+            if (this.isHurt && this.restoreHealthTimer > 9.4f)
+            {
+                return;
+            }
+
+            this.isHurt = false;
         }
-        else if (CrossPlatformInputManager.GetAxis("Vertical") < -0.2f)
-        {
-            UnHide();
-        }
+
+        //just like usual Input.GetAxis("Horizontal");
+        this.horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
 
         MovingCharacter();
     }
@@ -166,6 +172,7 @@ public class Moving : MonoBehaviour
         if (other.tag == HideSpotTag)
         {
             this.canHide = true;
+            Hud.instance.SwitchHideButton(true);
         }
     }
 
@@ -174,53 +181,26 @@ public class Moving : MonoBehaviour
         if (other.tag == HideSpotTag)
         {
             this.canHide = false;
+            Hud.instance.SwitchHideButton(false);
             UnHide();
         }
     }
 
     private void MovingCharacter()
     {
-        Vector3 movement = new Vector3(this.horizontal, 0f, 0f);
-
-        if (this.horizontal != 0)
+        if (this.horizontal != 0f && !this.isHurt)
         {
-            if (this.horizontal <= 0.5f && this.horizontal > 0f)
+            this.RigidbodyPlayer.velocity = new Vector2(this.horizontal * GameData.sprintSpeed, this.rigidbodyPlayer.velocity.y);
+            if (this.horizontal < 0)
             {
-
-                this.RigidbodyPlayer.velocity = movement * 2;
-
-                //  this.transform.Translate(Vector3.right * Time.deltaTime);
-                this.gameObject.GetComponent<SpriteRenderer>().flipX = false;
+                this.sprite.flipX = true;
             }
-            else if (this.horizontal > 0.5f)
+            else
             {
-                this.RigidbodyPlayer.velocity = movement * GameData.sprintSpeed;
-
-                //TODO Moving with transform
-                // this.transform.Translate(Vector3.left * sprintingSpeed * Time.deltaTime);
-                this.gameObject.GetComponent<SpriteRenderer>().flipX = false;
-
-            }
-            else if (this.horizontal >= -0.5f && this.horizontal < 0)
-            {
-                this.RigidbodyPlayer.velocity = movement * 2;
-                //TODO Moving with transform
-                //this.transform.Translate(Vector3.left * Time.deltaTime);
-                this.gameObject.GetComponent<SpriteRenderer>().flipX = true;
-
-
-            }
-            else if (this.horizontal < -0.5f)
-            {
-                this.RigidbodyPlayer.velocity = movement * GameData.sprintSpeed;
-
-                //TODO Moving with transform
-                // this.transform.Translate(Vector3.left * sprintingSpeed * Time.deltaTime);
-                this.gameObject.GetComponent<SpriteRenderer>().flipX = true;
+                this.sprite.flipX = false;
             }
 
             this.isSprintig = true;
-
         }
         else
         {
@@ -233,12 +213,10 @@ public class Moving : MonoBehaviour
         this.animator.SetBool("Idle", this.isSprintig);
         this.animator.SetBool("JumpToIdle", this.isGrounded);
 
-        if (this.isGrounded && !this.isSprintig && !this.isJumping && koreyState == State.Alive && !lowerKick)
+        if (this.isGrounded && !this.isSprintig && !this.isJumping && koreyState == State.Alive && !this.lowerKick)
         {
             this.RigidbodyPlayer.velocity = Vector2.zero;
         }
-
-
     }
 
     public void EndOfLowerKick()
@@ -263,19 +241,20 @@ public class Moving : MonoBehaviour
     {
         if (!this.isJumping)
         {
-            this.animator.SetTrigger(this.jump);
             this.isJumping = true;
-            this.RigidbodyPlayer.AddForce(Vector3.up * 5f, ForceMode2D.Impulse);
+            this.RigidbodyPlayer.AddForce(new Vector2(0f, 300f));
+            this.animator.SetTrigger(this.jump);
         }
     }
 
-    private void RecieveDamage(int value)
+    public void RecieveDamage(int value)
     {
         this.restoreHealthTimer = GameData.HitTime;
         this.animator.SetTrigger(this.DamageHash);
         Vector2 kickBackImpulse = new Vector2(-2f, 1f);
         this.RigidbodyPlayer.velocity = Vector2.zero;
         this.horizontal = 0;
+        this.isHurt = true;
         this.RigidbodyPlayer.AddForce(kickBackImpulse, ForceMode2D.Impulse);
         UpdateHealth(value);
     }
@@ -323,8 +302,6 @@ public class Moving : MonoBehaviour
         Hud.instance.ActivateTryAgainPanel();
     }
 
-
-
     public void ActivateKickDetector()
     {
         this.kickDetector.SetActive(true);
@@ -344,8 +321,6 @@ public class Moving : MonoBehaviour
     {
         this.punchDetector.SetActive(false);
     }
-
-
 
     public void ActivateAirPunchkDetector()
     {
@@ -369,10 +344,5 @@ public class Moving : MonoBehaviour
 
             this.animator.SetTrigger("NormalKick");
         }
-    }
-
-    public void TakeDamageTest(int damage)
-    {
-        UpdateHealth(-10);
     }
 }

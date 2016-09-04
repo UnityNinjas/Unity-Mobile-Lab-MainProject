@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -12,12 +13,14 @@ public class Hud : MonoBehaviour
     public RectTransform topVignete;
     public RectTransform bottomVignete;
     public MotionBlur motionBlur;
+    public GameObject hideButton;
 
     public CanvasGroup mobileControls;
 
     public Scrollbar battery;
     public GameObject tryAgain;
     public InputField inputField;
+    public GameObject finishScreen;
 
     public void Awake()
     {
@@ -30,6 +33,11 @@ public class Hud : MonoBehaviour
         UpdateHealth();
         this.motionBlur.blurAmount = 0;
         this.mobileControls.alpha = 1;
+    }
+
+    public void SwitchHideButton(bool show)
+    {
+        this.hideButton.SetActive(show);
     }
 
     public void UpdateHealth()
@@ -87,5 +95,17 @@ public class Hud : MonoBehaviour
                     break;
             }
         }
+    }
+
+    public void FinishScreenOpen()
+    {
+        this.finishScreen.SetActive(true);
+        StartCoroutine(FinishTimerOn());
+    }
+
+    private IEnumerator FinishTimerOn()
+    {
+        yield return new WaitForSeconds(10f);
+        Application.Quit();
     }
 }

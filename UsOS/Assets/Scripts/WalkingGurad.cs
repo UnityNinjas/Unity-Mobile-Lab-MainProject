@@ -1,10 +1,9 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using Object = UnityEngine.Object;
 
 public class WalkingGurad : MonoBehaviour
 {
-    private RectTransform currenTransform;
+    private Transform currenTransform;
     private float maxPosition;
     // private bool isFocused;
     private int speed = 2;
@@ -24,13 +23,13 @@ public class WalkingGurad : MonoBehaviour
 
     private void Start()
     {
-        this.currenTransform = GetComponent<RectTransform>();
+        this.currenTransform = this.transform;
         this.sprite = GetComponent<SpriteRenderer>();
         this.animator = GetComponent<Animator>();
-        this.maxPosition = this.currenTransform.anchoredPosition.x + 2;
-        shoot = Animator.StringToHash("Shoot");
-        walking = Animator.StringToHash("Walking");
-        CollisionManager.KoreyTrigger = StartShooting;
+        this.maxPosition = this.currenTransform.localPosition.x - 4.6f;
+        this.shoot = Animator.StringToHash("Shoot");
+        this.walking = Animator.StringToHash("Walking");
+        this.CollisionManager.KoreyTrigger = StartShooting;
     }
 
     public void Dead(bool isTakingHit)
@@ -38,7 +37,7 @@ public class WalkingGurad : MonoBehaviour
         if (isTakingHit)
         {
             this.animator.SetTrigger("Die");
-            isDead = true;
+            this.isDead = true;
         }
     }
 
@@ -47,13 +46,13 @@ public class WalkingGurad : MonoBehaviour
         if (koreyTrigger)
         {
             this.speed = 0;
-            this.animator.SetTrigger(shoot);
-            bullet.SetActive(true);
+            this.animator.SetTrigger(this.shoot);
+            this.bullet.SetActive(true);
         }
         else
         {
-            this.animator.SetTrigger(walking);
-            speed = 2;
+            this.animator.SetTrigger(this.walking);
+            this.speed = 2;
         }
 
     }
@@ -62,7 +61,7 @@ public class WalkingGurad : MonoBehaviour
     {
         if (Moving.koreyState == State.Alive)
         {
-            Instantiate(bullet, shootPoint.position, Quaternion.identity);
+            Instantiate(this.bullet, this.shootPoint.position, Quaternion.identity);
         }
     }
 
@@ -82,41 +81,40 @@ public class WalkingGurad : MonoBehaviour
 
     private void ClampPosition()
     {
-        if (this.currenTransform.anchoredPosition.x <= -this.maxPosition)
+        if (this.currenTransform.localPosition.x <= -this.maxPosition)
         {
-            if (timeStay <= 0)
+            if (this.timeStay <= 0)
             {
                 this.transform.rotation = new Quaternion(0, 180, 0, 0);
                 this.animator.SetTrigger("Walking");
-                timeStay = 1;
-                speed = 2;
+                this.timeStay = 1;
+                this.speed = 2;
             }
             else
             {
-                timeStay -= Time.deltaTime;
-                speed = 0;
+                this.timeStay -= Time.deltaTime;
+                this.speed = 0;
             }
 
         }
 
 
-        if (this.currenTransform.anchoredPosition.x >= this.maxPosition)
+        if (this.currenTransform.localPosition.x >= this.maxPosition)
         {
-            if (timeStay <= 0)
+            if (this.timeStay <= 0)
             {
                 this.transform.rotation = new Quaternion(0, 0, 0, 0);
                 this.animator.SetTrigger("Walking");
-                timeStay = 1;
-                speed = 2;
+                this.timeStay = 1;
+                this.speed = 2;
             }
             else
             {
-                timeStay -= Time.deltaTime;
-                speed = 0;
+                this.timeStay -= Time.deltaTime;
+                this.speed = 0;
             }
         }
 
-        this.animator.SetFloat("Idle", timeStay);
+        this.animator.SetFloat("Idle", this.timeStay);
     }
 }
-

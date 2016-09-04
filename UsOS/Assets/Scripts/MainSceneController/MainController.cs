@@ -13,20 +13,29 @@ public class MainController : MonoBehaviour
     [Header("Level 3")]
     public GameObject laserOnDoor;
 
+    public Transform finishDoor;
+    public Collider2D colliderOnFinishDoor;
+
     public void OnDoorLockerClicked()
     {
-        StartCoroutine(OpenDoor());
+        StartCoroutine(OpenDoor(this.door, this.colliderOnDoor));
     }
 
-    private IEnumerator OpenDoor()
+    public void OnFinishDoorLockerClicked()
     {
-        while (this.door.rotation.y > 0)
+        StartCoroutine(OpenDoor(this.finishDoor, this.colliderOnDoor));
+        this.colliderOnFinishDoor.isTrigger = true;
+    }
+
+    private IEnumerator OpenDoor(Transform door, Collider2D collider)
+    {
+        while (door.rotation.y > 0)
         {
-            this.door.Rotate(new Vector3(0, -5f));
+            door.Rotate(new Vector3(0, -5f));
             yield return new WaitForEndOfFrame();
         }
 
-        this.colliderOnDoor.enabled = false;
+        collider.enabled = false;
         this.lightOnDoor.color = Color.green;
     }
 }

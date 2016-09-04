@@ -1,8 +1,8 @@
 ﻿public static class GameData
 {
     //Health Player
-    private const int MinHealth = 0;
-    private const int MaxHealth = 230;
+    public const int MinHealth = 0;
+    public const int MaxHealth = 230;
     public const float DefaultTime = 2;
     public const float HitTime = 10f;
 
