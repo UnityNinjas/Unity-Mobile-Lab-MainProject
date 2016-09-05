@@ -5194,7 +5194,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 835894376}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.1, y: 1.5, z: 0}
+  m_LocalPosition: {x: 0.1, y: 1.59, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -5666,7 +5666,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 896204474}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.2, y: 0, z: 0}
+  m_LocalPosition: {x: 0.98, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -5750,7 +5750,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cab61c2dae51954bbaf62f6d4998387, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bullet: {fileID: 1000012169673398, guid: 10bdf7f650eff394a916b2dd203590f1, type: 2}
+  bullet: {fileID: 209964539}
   shootPoint: {fileID: 1054633722}
   CollisionManager: {fileID: 1900058895}
   HitDetector: {fileID: 1871886782}
@@ -5786,7 +5786,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!1001 &907401249
 Prefab:
   m_ObjectHideFlags: 0
@@ -9383,7 +9383,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: -0.138}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 127.14583, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 75, z: 0}
   m_Children: []
   m_Father: {fileID: 896204475}
   m_RootOrder: 0
@@ -9399,7 +9399,7 @@ Light:
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_Intensity: 1.76
   m_Range: 7.059055
-  m_SpotAngle: 46
+  m_SpotAngle: 133.04141
   m_CookieSize: 10
   m_Shadows:
     m_Type: 0
@@ -9968,7 +9968,7 @@ Prefab:
     - target: {fileID: 198000011178369710, guid: 2bf0d70cb7e8fc344978c77486b89959,
         type: 2}
       propertyPath: ShapeModule.radius
-      value: 3.1492004
+      value: 5.1571274
       objectReference: {fileID: 0}
     - target: {fileID: 4000012201667346, guid: 2bf0d70cb7e8fc344978c77486b89959, type: 2}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -13510,7 +13510,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1900058892}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9385db9b586d92b4abf7acee37def1c1, type: 3}
+  m_Script: {fileID: 11500000, guid: 1f203b5c2402e0f46aaf7d9d85d2ed68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1900323835
