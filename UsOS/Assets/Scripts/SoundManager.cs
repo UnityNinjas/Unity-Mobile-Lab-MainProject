@@ -10,10 +10,9 @@ using System.Linq;
 //Add new clips here manually. Check indexes of other clips to be correct Number.Enum when add new assets.
 public enum Clip
 {
-    Click = 0,
-    Loading = 1,
-    LevelUp = 2,
-    Purchase = 3
+    GunShot = 0,
+    Punch = 1,
+    Rain = 2
 }
 
 /// <summary>
@@ -31,7 +30,7 @@ public class SoundManager : MonoBehaviour
     public AudioSource firstFxSrc;
     public AudioSource secondFxSrc;
 
-    [Header("Don't forget enumeration in the script.")]
+    [Header("Don't forget Enum items.")]
     public SoundData[] clipsLibrary;
 
     public static SoundManager instance;
@@ -74,34 +73,19 @@ public class SoundManager : MonoBehaviour
         BindClipToSrc(sound);
         BasePlayWithDelay(this.musicSource, delay);
     }
-    
+
     private void BasePlay(AudioSource sound)
     {
-        if (!StaticData.haveSound)
-        {
-            return;
-        }
-
         sound.Play();
     }
 
     private void BasePlayOneShot(AudioSource sound)
     {
-        if (!StaticData.haveSound)
-        {
-            return;
-        }
-
         sound.PlayOneShot(sound.clip);
     }
 
     private void BasePlayWithDelay(AudioSource sound, float delay)
     {
-        if (!StaticData.haveSound)
-        {
-            return;
-        }
-
         sound.PlayDelayed(delay);
     }
 

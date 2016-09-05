@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Object = UnityEngine.Object;
 
 public class WalkingGurad : MonoBehaviour
 {
@@ -64,6 +63,7 @@ public class WalkingGurad : MonoBehaviour
         if (Moving.koreyState == State.Alive)
         {
             Instantiate(this.bullet, this.shootPoint.position, Quaternion.identity);
+            SoundManager.instance.FxPlayOnce(Clip.GunShot);
         }
     }
 

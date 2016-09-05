@@ -16,6 +16,12 @@ public class MainController : MonoBehaviour
     public Transform finishDoor;
     public Collider2D colliderOnFinishDoor;
 
+    public void Start()
+    {
+        SoundManager.instance.MusicPlay(Clip.Rain);
+        Object.DontDestroyOnLoad(SoundManager.instance);
+    }
+
     public void OnDoorLockerClicked()
     {
         StartCoroutine(OpenDoor(this.door, this.colliderOnDoor));

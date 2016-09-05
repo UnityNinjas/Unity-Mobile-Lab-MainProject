@@ -40,7 +40,7 @@ public class Moving : MonoBehaviour
     private readonly int DamageHash = Animator.StringToHash("Damage");
     private readonly int deadHash = Animator.StringToHash("Dead");
     //private readonly int idle = Animator.StringToHash("Idle");
-    private readonly int jump = Animator.StringToHash("Jump");
+    private readonly int jumpHash = Animator.StringToHash("Jump");
 
     private float horizontal;
     private Animator animator;
@@ -208,10 +208,17 @@ public class Moving : MonoBehaviour
             this.isSprintig = false;
         }
 
-        this.animator.SetFloat("Sprint", Mathf.Abs(this.horizontal));
-        this.animator.SetFloat("Walking", Mathf.Abs(this.horizontal));
-        this.animator.SetBool("Idle", this.isSprintig);
-        this.animator.SetBool("JumpToIdle", this.isGrounded);
+        if (this.isJumping)
+        {
+            this.animator.SetTrigger(this.jumpHash);
+        }
+        else
+        {
+            this.animator.SetFloat("Sprint", Mathf.Abs(this.horizontal));
+            this.animator.SetFloat("Walking", Mathf.Abs(this.horizontal));
+            this.animator.SetBool("Idle", this.isSprintig);
+            this.animator.SetBool("JumpToIdle", this.isGrounded);
+        }
 
         if (this.isGrounded && !this.isSprintig && !this.isJumping && koreyState == State.Alive && !this.lowerKick)
         {
@@ -223,10 +230,13 @@ public class Moving : MonoBehaviour
     {
         this.lowerKick = false;
         this.endOfAnimation = true;
+        SoundManager.instance.FxPlayOnce(Clip.Punch);
     }
 
     public void Punch()
     {
+        SoundManager.instance.FxPlayOnce(Clip.Punch);
+
         if (this.isJumping)
         {
             this.animator.SetTrigger("AirPunch");
@@ -243,7 +253,7 @@ public class Moving : MonoBehaviour
         {
             this.isJumping = true;
             this.RigidbodyPlayer.AddForce(new Vector2(0f, 300f));
-            this.animator.SetTrigger(this.jump);
+            this.horizontal = 0;
         }
     }
 
@@ -251,9 +261,9 @@ public class Moving : MonoBehaviour
     {
         this.restoreHealthTimer = GameData.HitTime;
         this.animator.SetTrigger(this.DamageHash);
-        Vector2 kickBackImpulse = new Vector2(-2f, 1f);
-        this.RigidbodyPlayer.velocity = Vector2.zero;
-        this.horizontal = 0;
+        Vector2 kickBackImpulse = new Vector2(-0.1f, 1f);
+        //this.RigidbodyPlayer.velocity = Vector2.zero;
+        //this.horizontal = 0;
         this.isHurt = true;
         this.RigidbodyPlayer.AddForce(kickBackImpulse, ForceMode2D.Impulse);
         UpdateHealth(value);
@@ -298,7 +308,6 @@ public class Moving : MonoBehaviour
     //Attached to Korey animator/ animation: "Dead"
     public void OnDeadFinish()
     {
-        Debug.Log("Fuck");
         Hud.instance.ActivateTryAgainPanel();
     }
 
@@ -344,5 +353,7 @@ public class Moving : MonoBehaviour
 
             this.animator.SetTrigger("NormalKick");
         }
+
+        SoundManager.instance.FxPlayOnce(Clip.Punch);
     }
 }

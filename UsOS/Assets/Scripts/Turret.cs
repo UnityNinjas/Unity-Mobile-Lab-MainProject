@@ -27,6 +27,7 @@ public class Turret : MonoBehaviour
             {
                 this.timer = 1f;
                 Object bullet = Instantiate(this.bulletPrefab, this.bulletPivot, false);
+                SoundManager.instance.FxPlayOnce(Clip.GunShot);
                 (bullet as GameObject).SetActive(true);
             }
 
