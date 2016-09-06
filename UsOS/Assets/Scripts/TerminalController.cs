@@ -6,6 +6,7 @@ public class TerminalController : MonoBehaviour, IPointerDownHandler
 {
     public GameObject[] objectControls;
     public Transform ui;
+    public ParticleSystem explosionEffect;
     private bool isEnabled;
 
     public void SwitchUIVisibility()
@@ -53,12 +54,14 @@ public class TerminalController : MonoBehaviour, IPointerDownHandler
     public void EnableObjects()
     {
         this.isEnabled = true;
+        this.explosionEffect.Emit(2);
         EtarateAll();
     }
 
     public void DesableObjects()
     {
         this.isEnabled = false;
+        this.explosionEffect.Emit(2);
         EtarateAll();
     }
 

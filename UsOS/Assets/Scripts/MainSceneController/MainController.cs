@@ -9,12 +9,14 @@ public class MainController : MonoBehaviour
     public Transform door;
     public Light lightOnDoor;
     public Collider2D colliderOnDoor;
+    public ParticleSystem hackEffect;
     [Space(10)]
     [Header("Level 3")]
     public GameObject laserOnDoor;
 
     public Transform finishDoor;
     public Collider2D colliderOnFinishDoor;
+    public ParticleSystem hackEffectFinish;
 
     public void Start()
     {
@@ -24,6 +26,7 @@ public class MainController : MonoBehaviour
 
     public void OnDoorLockerClicked()
     {
+        this.hackEffect.Emit(2);
         StartCoroutine(OpenDoor(this.door, this.colliderOnDoor));
     }
 
@@ -31,6 +34,7 @@ public class MainController : MonoBehaviour
     {
         StartCoroutine(OpenDoor(this.finishDoor, this.colliderOnDoor));
         this.colliderOnFinishDoor.isTrigger = true;
+        this.hackEffectFinish.Emit(2);
     }
 
     private IEnumerator OpenDoor(Transform door, Collider2D collider)
