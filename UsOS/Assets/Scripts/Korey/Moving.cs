@@ -39,18 +39,15 @@ public class Moving : MonoBehaviour
     //Animation hashes
     private readonly int DamageHash = Animator.StringToHash("Damage");
     private readonly int deadHash = Animator.StringToHash("Dead");
-    //private readonly int idle = Animator.StringToHash("Idle");
-    private readonly int jumpHash = Animator.StringToHash("Jump");
+    private readonly int isGroundedHash = Animator.StringToHash("Jump");
+    private readonly int sprintHash = Animator.StringToHash("Sprint");
+    private readonly int idleHash = Animator.StringToHash("Idle");
+    private readonly int walkingHash = Animator.StringToHash("Walking");
 
     private float horizontal;
     private Animator animator;
-    private bool isSprintig;
-    private bool isJumping;
-    private bool endOfAnimation;
-    private bool lowerKick;
     private bool isGrounded = true;
     private Rigidbody2D rigidbodyPlayer;
-    private bool isMoving;
     private SpriteRenderer sprite;
     private bool isHurt;
 
@@ -75,7 +72,7 @@ public class Moving : MonoBehaviour
     public void Awake()
     {
         this.animator = GetComponent<Animator>();
-        this.sprite = this.GetComponent<SpriteRenderer>();
+        this.sprite = GetComponent<SpriteRenderer>();
     }
 
     public void Start()
@@ -92,7 +89,7 @@ public class Moving : MonoBehaviour
             return;
         }
 
-        //When player is hurt will stop AddForce from controllers
+        // When player is hurt will stop AddForce from controllers
         // When player finish his health pennalty will restore 4 health per update 
         if (this.restoreHealthTimer <= 0)
         {
@@ -114,56 +111,47 @@ public class Moving : MonoBehaviour
         //just like usual Input.GetAxis("Horizontal");
         this.horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
 
-        MovingCharacter();
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        string tagAsString;
-        DamageTag tagCollider;
-
-        tagAsString = collision.collider.tag;
-        if (tagAsString == "FloorCollider")
+        if (this.horizontal != 0f && !this.isHurt)
         {
-            this.isJumping = false;
+            this.RigidbodyPlayer.velocity = new Vector2(
+                this.horizontal * GameData.sprintSpeed,
+                this.rigidbodyPlayer.velocity.y);
+
+            this.sprite.flipX = this.horizontal < 0;
         }
 
-        if (!this.damageTagsMap.ContainsKey(tagAsString))
+        if (this.isGrounded)
         {
-            return;
-        }
-
-        tagCollider = this.damageTagsMap[tagAsString];
-        switch (tagCollider)
-        {
-            case DamageTag.Laser:
-                RecieveDamage(-GameData.DamageByLaser);
-                break;
-            case DamageTag.Enemy:
-                RecieveDamage(-GameData.DamageByKick);
-                break;
-            case DamageTag.Bullet:
-                RecieveDamage(-GameData.DamageByBullet);
-                break;
-            case DamageTag.Explosion:
-                RecieveDamage(-GameData.DamageByExplosion);
-                break;
+            this.animator.SetFloat(this.idleHash, Mathf.Abs(this.horizontal));
+            this.animator.SetFloat(this.sprintHash, Mathf.Abs(this.horizontal));
+            this.animator.SetFloat(this.walkingHash, Mathf.Abs(this.horizontal));
         }
     }
 
-    private void OnCollisionExit2D(Collision2D other)
+    private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag("FloorCollider"))
-        {
-            this.isGrounded = false;
-        }
-    }
-
-    private void OnCollisionStay2D(Collision2D other)
-    {
-        if (other.gameObject.CompareTag("FloorCollider"))
+        if (other.collider.tag == "FloorCollider")
         {
             this.isGrounded = true;
+        }
+
+        if (this.damageTagsMap.ContainsKey(other.collider.tag))
+        {
+            switch (this.damageTagsMap[other.collider.tag])
+            {
+                case DamageTag.Laser:
+                    RecieveDamage(GameData.DamageByLaser);
+                    break;
+                case DamageTag.Enemy:
+                    RecieveDamage(GameData.DamageByKick);
+                    break;
+                case DamageTag.Bullet:
+                    RecieveDamage(GameData.DamageByBullet);
+                    break;
+                case DamageTag.Explosion:
+                    RecieveDamage(GameData.DamageByExplosion);
+                    break;
+            }
         }
     }
 
@@ -186,58 +174,14 @@ public class Moving : MonoBehaviour
         }
     }
 
-    private void MovingCharacter()
-    {
-        if (this.horizontal != 0f && !this.isHurt)
-        {
-            this.RigidbodyPlayer.velocity = new Vector2(this.horizontal * GameData.sprintSpeed, this.rigidbodyPlayer.velocity.y);
-            if (this.horizontal < 0)
-            {
-                this.sprite.flipX = true;
-            }
-            else
-            {
-                this.sprite.flipX = false;
-            }
-
-            this.isSprintig = true;
-        }
-        else
-        {
-
-            this.isSprintig = false;
-        }
-
-        if (this.isJumping)
-        {
-            this.animator.SetTrigger(this.jumpHash);
-        }
-        else
-        {
-            this.animator.SetFloat("Sprint", Mathf.Abs(this.horizontal));
-            this.animator.SetFloat("Walking", Mathf.Abs(this.horizontal));
-            this.animator.SetBool("Idle", this.isSprintig);
-            this.animator.SetBool("JumpToIdle", this.isGrounded);
-        }
-
-        if (this.isGrounded && !this.isSprintig && !this.isJumping && koreyState == State.Alive && !this.lowerKick)
-        {
-            this.RigidbodyPlayer.velocity = Vector2.zero;
-        }
-    }
-
     public void EndOfLowerKick()
     {
-        this.lowerKick = false;
-        this.endOfAnimation = true;
-        SoundManager.instance.FxPlayOnce(Clip.Punch);
+
     }
 
     public void Punch()
     {
-        SoundManager.instance.FxPlayOnce(Clip.Punch);
-
-        if (this.isJumping)
+        if (!this.isGrounded)
         {
             this.animator.SetTrigger("AirPunch");
         }
@@ -249,11 +193,15 @@ public class Moving : MonoBehaviour
 
     public void Jump()
     {
-        if (!this.isJumping)
+        if (this.isGrounded)
         {
-            this.isJumping = true;
-            this.RigidbodyPlayer.AddForce(new Vector2(0f, 300f));
-            this.horizontal = 0;
+            this.isGrounded = false;
+            this.RigidbodyPlayer.AddForce(new Vector2(0f, 5f), ForceMode2D.Impulse);
+
+            this.animator.SetFloat(this.idleHash, 2);
+            this.animator.SetFloat(this.sprintHash, 2);
+            this.animator.SetFloat(this.walkingHash, 2);
+            this.animator.SetTrigger(this.isGroundedHash);
         }
     }
 
@@ -261,9 +209,7 @@ public class Moving : MonoBehaviour
     {
         this.restoreHealthTimer = GameData.HitTime;
         this.animator.SetTrigger(this.DamageHash);
-        Vector2 kickBackImpulse = new Vector2(-0.1f, 1f);
-        //this.RigidbodyPlayer.velocity = Vector2.zero;
-        //this.horizontal = 0;
+        Vector2 kickBackImpulse = new Vector2(-0.5f, 1f);
         this.isHurt = true;
         this.RigidbodyPlayer.AddForce(kickBackImpulse, ForceMode2D.Impulse);
         UpdateHealth(value);
@@ -343,17 +289,6 @@ public class Moving : MonoBehaviour
 
     public void Kick()
     {
-        if (this.isSprintig)
-        {
-            this.animator.SetTrigger("LowerKick");
-            this.lowerKick = true;
-        }
-        else
-        {
-
-            this.animator.SetTrigger("NormalKick");
-        }
-
-        SoundManager.instance.FxPlayOnce(Clip.Punch);
+        this.animator.SetTrigger("NormalKick");
     }
 }
