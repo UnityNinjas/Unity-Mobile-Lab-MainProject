@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityStandardAssets.CrossPlatformInput;
 
 internal enum DamageTag
@@ -50,6 +51,7 @@ public class Moving : MonoBehaviour
     private Rigidbody2D rigidbodyPlayer;
     private SpriteRenderer sprite;
     private bool isHurt;
+    private bool direction;
 
     private Rigidbody2D RigidbodyPlayer
     {
@@ -82,7 +84,27 @@ public class Moving : MonoBehaviour
         GameData.Health = 100;
     }
 
-    private void Update()
+    //With directives you can describe to builder or compiler when to use code. 
+    //In that case will use only in editor and standalone build.
+    //When you build on Android for example that Update didn't exist there.
+#if UNITY_EDITOR || UNITY_STANDALONE
+
+    public void Update()
+    {
+        if (Input.GetButtonDown("Jump"))
+        {
+            Jump();
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftAlt) || Input.GetKeyDown(KeyCode.RightAlt))
+        {
+            Kick();
+        }
+    }
+
+#endif
+
+    private void FixedUpdate()
     {
         if (koreyState == State.Dead)
         {
@@ -98,7 +120,7 @@ public class Moving : MonoBehaviour
         }
         else if (this.restoreHealthTimer > 0)
         {
-            this.restoreHealthTimer -= Time.deltaTime;
+            this.restoreHealthTimer -= Time.fixedDeltaTime;
 
             if (this.isHurt && this.restoreHealthTimer > 9.4f)
             {
@@ -108,23 +130,32 @@ public class Moving : MonoBehaviour
             this.isHurt = false;
         }
 
-        //just like usual Input.GetAxis("Horizontal");
+        //just like usual Input.GetAxis("Horizontal"); but from thumb in UI
         this.horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
 
-        if (this.horizontal != 0f && !this.isHurt)
+        if (!this.isHurt)
         {
             this.RigidbodyPlayer.velocity = new Vector2(
                 this.horizontal * GameData.sprintSpeed,
                 this.rigidbodyPlayer.velocity.y);
 
-            this.sprite.flipX = this.horizontal < 0;
+            if (this.horizontal == 0f)
+            {
+                this.sprite.flipX = this.direction;
+            }
+            else
+            {
+                this.direction = this.horizontal < 0;
+                this.sprite.flipX = this.direction;
+            }
         }
 
         if (this.isGrounded)
         {
-            this.animator.SetFloat(this.idleHash, Mathf.Abs(this.horizontal));
-            this.animator.SetFloat(this.sprintHash, Mathf.Abs(this.horizontal));
-            this.animator.SetFloat(this.walkingHash, Mathf.Abs(this.horizontal));
+            float absValue = Mathf.Abs(this.horizontal);
+            this.animator.SetFloat(this.idleHash, absValue);
+            this.animator.SetFloat(this.walkingHash, absValue);
+            this.animator.SetFloat(this.sprintHash, absValue);
         }
     }
 
@@ -212,7 +243,7 @@ public class Moving : MonoBehaviour
         Vector2 kickBackImpulse = new Vector2(-0.5f, 1f);
         this.isHurt = true;
         this.RigidbodyPlayer.AddForce(kickBackImpulse, ForceMode2D.Impulse);
-        UpdateHealth(value);
+        UpdateHealth(-value);
     }
 
     public void UpdateHealth(int value)
@@ -289,6 +320,13 @@ public class Moving : MonoBehaviour
 
     public void Kick()
     {
-        this.animator.SetTrigger("NormalKick");
+        if (!this.isGrounded)
+        {
+            this.animator.SetTrigger("AirPunch");
+        }
+        else
+        {
+            this.animator.SetTrigger("NormalKick");
+        }
     }
 }

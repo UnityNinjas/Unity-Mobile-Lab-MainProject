@@ -12,11 +12,11 @@
 
     //Damage
     public const byte DamageByKick = 30;
-    public const byte DamageByLaser = 100;
+    public const byte DamageByLaser = 10;
     public const byte DamageByBullet = 15;
     public const byte DamageByExplosion = 40;
 
-    private static int health = 10;
+    private static int health = 200;
 
     public static int Health
     {
