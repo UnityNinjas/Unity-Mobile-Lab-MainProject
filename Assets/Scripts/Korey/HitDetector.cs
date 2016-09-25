@@ -6,7 +6,7 @@ public class HitDetector : MonoBehaviour
     {
         if (collider2D.gameObject.tag == "GuardBot")
         {
-            WalkingGurad guardRobot = collider2D.gameObject.GetComponent<WalkingGurad>();
+            WalkingGuard guardRobot = collider2D.gameObject.GetComponent<WalkingGuard>();
             guardRobot.Dead(true);
         }
     }

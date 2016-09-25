@@ -1,36 +1,34 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-public class WalkingGurad : MonoBehaviour
+public class WalkingGuard : MonoBehaviour
 {
-    private Transform currenTransform;
-    private float minPosition;
-    private float maxPosition;
-    // private bool isFocused;
-    private int speed = 1;
-    private Animator animator;
-    private float timeStay = 1;
-    private int walking;
-    private int shoot;
-    private bool isDead;
-    private float shootingCounter = 1;
+    private readonly int ShootHash = Animator.StringToHash("Shoot");
+    private readonly int WalkingHash = Animator.StringToHash("Walking");
+    private readonly int IdleHash = Animator.StringToHash("Idle");
+
     public GameObject bullet;
     public Transform shootPoint;
     public CollisionManager CollisionManager;
-    public HitDetector HitDetector;
-    public HitDetector PubchDetector;
-    public HitDetector AirPunchDetector;
+
+    private Transform currenTransform;
+    private float minPosition;
+    private float maxPosition;
+    private int speed = 1;
+    private Animator animator;
+    private float timeStay = 1;
+    private bool isDead;
+    private float shootingCounter = 1;
     private float moving = -1f;
+    private bool isShooting;
 
     private void Start()
     {
         this.timeStay = 2f;
         this.currenTransform = this.transform;
-        this.animator = GetComponent<Animator>();
+        this.animator = this.GetComponent<Animator>();
         this.minPosition = this.currenTransform.position.x - 3f;
-        this.maxPosition = this.currenTransform.position.x + 3f;
-        this.shoot = Animator.StringToHash("Shoot");
-        this.walking = Animator.StringToHash("Walking");
-        this.CollisionManager.KoreyTrigger = StartShooting;
+        this.maxPosition = this.currenTransform.position.x + 6f;
+        this.CollisionManager.koreyTrigger = StartShooting;
     }
 
     public void Dead(bool isTakingHit)
@@ -44,26 +42,34 @@ public class WalkingGurad : MonoBehaviour
 
     private void StartShooting(bool koreyTrigger)
     {
+        this.isShooting = koreyTrigger;
         if (koreyTrigger)
         {
             this.speed = 0;
-            this.animator.SetTrigger(this.shoot);
             this.bullet.SetActive(true);
+            this.animator.SetTrigger(this.ShootHash);
         }
-        else
-        {
-            this.animator.SetTrigger(this.walking);
-            this.speed = 2;
-        }
-
     }
 
+    //Attached to animation "Shoot"
     public void Shooting()
     {
         if (Moving.koreyState == State.Alive)
         {
             Instantiate(this.bullet, this.shootPoint.position, Quaternion.identity);
             SoundManager.instance.FxPlayOnce(Clip.GunShot);
+        }
+    }
+
+    public void OnShootAnimaionFinish()
+    {
+        if (!this.isShooting)
+        {
+            this.animator.Play(this.WalkingHash);
+        }
+        else
+        {
+            this.animator.Play(this.ShootHash);
         }
     }
 
@@ -80,11 +86,19 @@ public class WalkingGurad : MonoBehaviour
         }
 
         if (this.currenTransform.position.x < this.minPosition ||
-            this.maxPosition < this.currenTransform.position.x)
+             this.currenTransform.position.x > this.maxPosition)
         {
-            this.moving = -this.moving;
-            this.GetComponent<SpriteRenderer>().flipX = !this.GetComponent<SpriteRenderer>().flipX;
+            if (this.transform.localRotation.y == 180)
+            {
+                this.transform.Rotate(Vector2.zero);
+            }
+            else
+            {
+                this.transform.Rotate(0, 180, 0);
+            }
+
             this.timeStay = 2f;
+            //Prevent stoping guard on one position. 
             this.currenTransform.Translate(new Vector2(this.moving * this.speed * Time.deltaTime, 0f));
         }
 
@@ -99,9 +113,11 @@ public class WalkingGurad : MonoBehaviour
             this.timeStay -= Time.deltaTime;
         }
 
-        this.animator.SetFloat("Idle", this.speed);
-        this.animator.SetFloat("Walking", this.speed);
-
-        this.currenTransform.Translate(new Vector2(this.moving * this.speed * Time.deltaTime, 0f));
+        if (!this.isShooting && this.speed > 0f)
+        {
+            this.currenTransform.Translate(new Vector2(this.moving * this.speed * Time.deltaTime, 0f));
+            this.animator.SetFloat(this.IdleHash, this.speed);
+            this.animator.SetFloat(this.WalkingHash, this.speed);
+        }
     }
 }

@@ -3,21 +3,21 @@ using System;
 
 public class CollisionManager : MonoBehaviour
 {
-    public Action<bool> KoreyTrigger;
+    public Action<bool> koreyTrigger;
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Korey")
+        if (collision.tag == "Korey")
         {
-            KoreyTrigger.Invoke(true);
+            this.koreyTrigger.Invoke(true);
         }
     }
 
     public void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Korey")
+        if (collision.tag == "Korey")
         {
-            KoreyTrigger.Invoke(false);
+            this.koreyTrigger.Invoke(false);
         }
     }
 }
