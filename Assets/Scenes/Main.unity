@@ -2715,6 +2715,10 @@ Prefab:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 802ecf7bbac1a53479e30ebabb9650a1, type: 2}
+    - target: {fileID: 21254840, guid: 447301396c983314eacbe9c155e1ae3e, type: 2}
+      propertyPath: m_SortingOrder
+      value: 16
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 447301396c983314eacbe9c155e1ae3e, type: 2}
   m_IsPrefabParent: 0
@@ -5537,7 +5541,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -354108773
+  m_SortingLayerID: 1859086223
   m_SortingOrder: 100
   m_Sprite: {fileID: 21300000, guid: 7c37549668c2bd94a8d689abd2b74faa, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -11303,7 +11307,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 21254840, guid: 447301396c983314eacbe9c155e1ae3e, type: 2}
       propertyPath: m_SortingLayerID
-      value: 1914288107
+      value: 1093696345
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 447301396c983314eacbe9c155e1ae3e, type: 2}
@@ -13164,7 +13168,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1670981121}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 18.72, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:

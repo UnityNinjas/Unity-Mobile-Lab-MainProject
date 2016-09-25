@@ -56,7 +56,7 @@ public class WalkingGuard : MonoBehaviour
     {
         if (Moving.koreyState == State.Alive)
         {
-            Instantiate(this.bullet, this.shootPoint.position, Quaternion.identity);
+            Instantiate(this.bullet, this.shootPoint.position, this.shootPoint.rotation);
             SoundManager.instance.FxPlayOnce(Clip.GunShot);
         }
     }

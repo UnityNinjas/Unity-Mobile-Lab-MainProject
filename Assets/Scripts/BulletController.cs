@@ -6,7 +6,7 @@ public class BulletController : MonoBehaviour
 
     private void Update()
     {
-        this.transform.Translate(Vector2.left * 20 * Time.deltaTime, Space.Self);
+        this.transform.Translate(new Vector2(-1, 0) * 20 * Time.deltaTime);
     }
 
     public void OnTriggerEnter2D(Collider2D other)
